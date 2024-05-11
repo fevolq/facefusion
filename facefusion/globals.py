@@ -10,6 +10,8 @@ output_path : Optional[str] = None
 force_download : Optional[bool] = None
 skip_download : Optional[bool] = None
 headless : Optional[bool] = None
+api: Optional[bool] = None
+port: Optional[int] = None
 log_level : Optional[LogLevel] = None
 # execution
 execution_providers : List[str] = []

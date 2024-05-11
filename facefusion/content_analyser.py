@@ -101,6 +101,7 @@ def analyse_video(video_path : str, start_frame : int, end_frame : int) -> bool:
 	counter = 0
 
 	with tqdm(total = len(frame_range), desc = wording.get('analysing'), unit = 'frame', ascii = ' =', disable = facefusion.globals.log_level in [ 'warn', 'error' ]) as progress:
+		process_manager.analyse()
 		for frame_number in frame_range:
 			if frame_number % int(video_fps) == 0:
 				frame = get_video_frame(video_path, frame_number)

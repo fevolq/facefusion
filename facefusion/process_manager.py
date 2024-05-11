@@ -2,14 +2,14 @@ from typing import Generator, List
 
 from facefusion.typing import QueuePayload, ProcessState
 
-PROCESS_STATE : ProcessState = 'pending'
+PROCESS_STATE: ProcessState = 'pending'
 
 
 def get_process_state() -> ProcessState:
 	return PROCESS_STATE
 
 
-def set_process_state(process_state : ProcessState) -> None:
+def set_process_state(process_state: ProcessState) -> None:
 	global PROCESS_STATE
 
 	PROCESS_STATE = process_state
@@ -17,6 +17,10 @@ def set_process_state(process_state : ProcessState) -> None:
 
 def is_checking() -> bool:
 	return get_process_state() == 'checking'
+
+
+def is_analysing() -> bool:
+	return get_process_state() == 'analysing'
 
 
 def is_processing() -> bool:
@@ -35,6 +39,10 @@ def check() -> None:
 	set_process_state('checking')
 
 
+def analyse() -> None:
+	set_process_state('analysing')
+
+
 def start() -> None:
 	set_process_state('processing')
 
@@ -47,7 +55,7 @@ def end() -> None:
 	set_process_state('pending')
 
 
-def manage(queue_payloads : List[QueuePayload]) -> Generator[QueuePayload, None, None]:
+def manage(queue_payloads: List[QueuePayload]) -> Generator[QueuePayload, None, None]:
 	for query_payload in queue_payloads:
 		if is_processing():
 			yield query_payload
