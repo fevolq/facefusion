@@ -1,4 +1,8 @@
-.assets
 .idea
 .vscode
+.git
+
+.assets
 data
+
+.env

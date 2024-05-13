@@ -45,8 +45,8 @@ def cli() -> None:
 	group_misc.add_argument('--force-download', help = wording.get('help.force_download'), action = 'store_true', default = config.get_bool_value('misc.force_download'))
 	group_misc.add_argument('--skip-download', help = wording.get('help.skip_download'), action = 'store_true', default = config.get_bool_value('misc.skip_download'))
 	group_misc.add_argument('--headless', help = wording.get('help.headless'), action = 'store_true', default = config.get_bool_value('misc.headless'))
-	group_misc.add_argument('--api', action = 'store_true', default = config.get_bool_value('misc.api'))
-	group_misc.add_argument('--port', action = 'store_true', default = config.get_int_value('misc.port', 8000))
+	group_misc.add_argument('--api', help = wording.get('help.api'), action = 'store_true', default = config.get_bool_value('misc.api'))
+	group_misc.add_argument('--port', help = wording.get('help.port'), default = config.get_int_value('misc.port', 8000))
 	group_misc.add_argument('--log-level', help = wording.get('help.log_level'), default = config.get_str_value('misc.log_level', 'info'), choices = logger.get_log_levels())
 	# execution
 	execution_providers = encode_execution_providers(onnxruntime.get_available_providers())
@@ -217,8 +217,10 @@ def run(program : ArgumentParser) -> None:
 		if not frame_processor_module.pre_check():
 			return
 	if facefusion.globals.headless:
+		print(f'------ Start with headless ------')
 		conditional_process()
 	elif facefusion.globals.api:
+		print(f'------ Start with api ------')
 		import facefusion.api.core as api
 		api.launch()
 	else:
@@ -227,6 +229,7 @@ def run(program : ArgumentParser) -> None:
 		for ui_layout in ui.get_ui_layouts_modules(facefusion.globals.ui_layouts):
 			if not ui_layout.pre_check():
 				return
+		print(f'------ Start with ui ------')
 		ui.launch()
 
 
