@@ -61,6 +61,11 @@ async def index():
 	return 'Hello World!'
 
 
+@router.get("/config")
+async def get_config(var: str):
+	return {var: getattr(globals, var, None)}
+
+
 @router.post("/submit")
 async def process_frames(
 	background_tasks: BackgroundTasks,
