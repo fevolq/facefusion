@@ -1,0 +1,31 @@
+version: '3.9'
+
+name: ${NAME:- facefusion }
+
+services:
+  facefusion:
+    image: facefusion-api:2.5.2
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "${PORT:- 8000 }:${TARGET_PORT:- 8000}"
+    environment:
+        - CLI_ARGS=--execution-providers=cuda --api --frame-processors=${FRAME_P:- face_swapper}
+    volumes:
+      - ${ASSETS_DIR:- ./.assets}:/facefusion/.assets
+      - ${DATA_DIR:- ./data}:/facefusion/data
+    restart: on-failure
+    networks:
+        - ff
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              device_ids: ['${DEVICE:-0}']
+              capabilities: [ gpu, video ]
+
+networks:
+  ff:
+    external: true
