@@ -16,8 +16,6 @@ services:
       - ${ASSETS_DIR:- ./.assets}:/facefusion/.assets
       - ${DATA_DIR:- ./data}:/facefusion/data
     restart: on-failure
-    networks:
-        - ff
     deploy:
       resources:
         reservations:
@@ -25,7 +23,3 @@ services:
             - driver: nvidia
               device_ids: ['${DEVICE:-0}']
               capabilities: [ gpu, video ]
-
-networks:
-  ff:
-    external: true
