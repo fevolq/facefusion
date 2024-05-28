@@ -63,7 +63,7 @@ WORDING : Dict[str, Any] =\
 		'skip_download': 'omit automate downloads and remote lookups',
 		'headless': 'run the program without a user interface',
 		'api': 'run the program with api',
-		'port': 'choose port when run with api',
+		'port': 'server port',
 		'log_level': 'adjust the message severity displayed in the terminal',
 		# execution
 		'execution_providers': 'accelerate the model inference using different providers (choices: {choices}, ...)',
