@@ -46,7 +46,7 @@ def cli() -> None:
 	group_misc.add_argument('--skip-download', help = wording.get('help.skip_download'), action = 'store_true', default = config.get_bool_value('misc.skip_download'))
 	group_misc.add_argument('--headless', help = wording.get('help.headless'), action = 'store_true', default = config.get_bool_value('misc.headless'))
 	group_misc.add_argument('--api', help = wording.get('help.api'), action = 'store_true', default = config.get_bool_value('misc.api'))
-	group_misc.add_argument('--port', help = wording.get('help.port'), default = config.get_int_value('misc.port', 8000))
+	group_misc.add_argument('--port', help = wording.get('help.port'), type = int, default = config.get_int_value('misc.port', 8000))
 	group_misc.add_argument('--log-level', help = wording.get('help.log_level'), default = config.get_str_value('misc.log_level', 'info'), choices = logger.get_log_levels())
 	# execution
 	execution_providers = encode_execution_providers(onnxruntime.get_available_providers())
