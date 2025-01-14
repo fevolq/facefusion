@@ -262,6 +262,7 @@ StateKey = Literal\
 	'open_browser',
 	'ui_layouts',
 	'ui_workflow',
+	'port',
 	'execution_device_id',
 	'execution_providers',
 	'execution_thread_count',

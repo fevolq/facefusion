@@ -186,6 +186,8 @@ WORDING : Dict[str, Any] =\
 		'open_browser': 'open the browser once the program is ready',
 		'ui_layouts': 'launch a single or multiple UI layouts (choices: {choices}, ...)',
 		'ui_workflow': 'choose the ui workflow',
+		# apis
+		'port': 'launch server with port',
 		# execution
 		'execution_device_id': 'specify the device used for processing',
 		'execution_providers': 'inference using different providers (choices: {choices}, ...)',
@@ -200,7 +202,8 @@ WORDING : Dict[str, Any] =\
 		# misc
 		'log_level': 'adjust the message severity displayed in the terminal',
 		# run
-		'run': 'run the program',
+		'run': 'run the program with ui',
+		'api': 'run the program with api',
 		'headless_run': 'run the program in headless mode',
 		'batch_run': 'run the program in batch mode',
 		'force_download': 'force automate downloads and exit',

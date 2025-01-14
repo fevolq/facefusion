@@ -190,6 +190,13 @@ def create_uis_program() -> ArgumentParser:
 	return program
 
 
+def create_apis_program() -> ArgumentParser:
+	program = ArgumentParser(add_help = False)
+	group_apis = program.add_argument_group('apis')
+	group_apis.add_argument('--port', help = wording.get('help.port'), default = config.get_int_value('apis.port', '7860'))
+	return program
+
+
 def create_execution_program() -> ArgumentParser:
 	program = ArgumentParser(add_help = False)
 	available_execution_providers = get_available_execution_providers()
@@ -271,6 +278,7 @@ def create_program() -> ArgumentParser:
 	sub_program = program.add_subparsers(dest = 'command')
 	# general
 	sub_program.add_parser('run', help = wording.get('help.run'), parents = [ create_config_path_program(), create_temp_path_program(), create_jobs_path_program(), create_source_paths_program(), create_target_path_program(), create_output_path_program(), collect_step_program(), create_uis_program(), collect_job_program() ], formatter_class = create_help_formatter_large)
+	sub_program.add_parser('api', help = wording.get('help.api'), parents = [ create_config_path_program(), create_temp_path_program(), create_jobs_path_program(), create_source_paths_program(), create_target_path_program(), create_output_path_program(), collect_step_program(), create_apis_program(), collect_job_program() ], formatter_class = create_help_formatter_large)
 	sub_program.add_parser('headless-run', help = wording.get('help.headless_run'), parents = [ create_config_path_program(), create_temp_path_program(), create_jobs_path_program(), create_source_paths_program(), create_target_path_program(), create_output_path_program(), collect_step_program(), collect_job_program() ], formatter_class = create_help_formatter_large)
 	sub_program.add_parser('batch-run', help = wording.get('help.batch_run'), parents = [ create_config_path_program(), create_temp_path_program(), create_jobs_path_program(), create_source_pattern_program(), create_target_pattern_program(), create_output_pattern_program(), collect_step_program(), collect_job_program() ], formatter_class = create_help_formatter_large)
 	sub_program.add_parser('force-download', help = wording.get('help.force_download'), parents = [ create_download_providers_program(), create_download_scope_program(), create_misc_program() ], formatter_class = create_help_formatter_large)

@@ -70,6 +70,12 @@ def route(args : Args) -> None:
 				return conditional_exit(2)
 		ui.init()
 		ui.launch()
+	if state_manager.get_item('command') == 'api':
+		import facefusion.apis.core as server
+
+		if not common_pre_check() or not processors_pre_check():
+			return conditional_exit(2)
+		server.launch()
 	if state_manager.get_item('command') == 'headless-run':
 		if not job_manager.init_jobs(state_manager.get_item('jobs_path')):
 			hard_exit(1)
