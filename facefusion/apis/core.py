@@ -104,6 +104,8 @@ DEFAULT_ARGS = {
 	# 'execution_queue_count': int(os.getenv('execution_queue_count', 1)),
 	# 'log_level': os.getenv('log_level', 'info'),
 }
+
+
 # apply_manager(DEFAULT_ARGS)
 
 
@@ -165,6 +167,11 @@ async def deep_swapper(
 	file_type = args.pop('file_extension', 'mp4')
 	response_type = args.pop('response_type', 'file')
 	dfm_id = args.pop('dfm_id', 'none')
+	logger.info(f'输入的参数：\n'
+				f'file: {file}\n'
+				f'file_type: {file_type}\n'
+				f'response_type： {response_type}\n'
+				f'dfm_id: {dfm_id}', 'api.deep_swapper')
 
 	uid = str(uuid.uuid4())
 	input_file = download(file, f'{uid}.{file_type}')
@@ -222,6 +229,7 @@ def get_media_type(file_path):
 
 
 app.include_router(router)
+
 
 def launch():
 	uvicorn.run(
