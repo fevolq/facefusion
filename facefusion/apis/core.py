@@ -104,19 +104,20 @@ DEFAULT_ARGS = {
 	# 'execution_queue_count': int(os.getenv('execution_queue_count', 1)),
 	# 'log_level': os.getenv('log_level', 'info'),
 }
-apply_manager(DEFAULT_ARGS)
+# apply_manager(DEFAULT_ARGS)
 
 
 @asynccontextmanager
 async def lifespan(_: FastAPI):
 	print('------------------------Start------------------------')
+	apply_manager(DEFAULT_ARGS)
 	os.makedirs(INPUT_DIR, exist_ok=True)
 	os.makedirs(OUTPUT_DIR, exist_ok=True)
 	yield
 	print('------------------------End------------------------')
 
 
-app = FastAPI()
+app = FastAPI(lifespan=lifespan)
 router = APIRouter()
 
 
@@ -160,27 +161,40 @@ async def deep_swapper(
 	args: Request,
 ):
 	args = await args.json()
+	file = args.pop('file', 'none')
+	file_type = args.pop('file_extension', 'mp4')
+	response_type = args.pop('response_type', 'file')
+	dfm_id = args.pop('dfm_id', 'none')
 
 	uid = str(uuid.uuid4())
-	input_file = download(args.pop('file'), f'{uid}.{args.get("type", "mp4")}')
-	output_file = os.path.join(OUTPUT_DIR, f'{uid}.{args.get("type", "mp4")}')
+	input_file = download(file, f'{uid}.{file_type}')
+	output_file = os.path.join(OUTPUT_DIR, f'{uid}.{file_type}')
 
 	state_manager.set_item('target_path', input_file)
 	state_manager.set_item('output_path', output_file)
 	state_manager.set_item('processors', ['deep_swapper'])
-	state_manager.set_item('deep_swapper_model', f'custom/{args.get("dfm_id")}')
+	state_manager.set_item('deep_swapper_model', f'custom/{dfm_id}')
 	apply_manager(args)
 
 	logger.info(f'Start conditional_process: {uid}', 'api.deep_swapper')
 	core.conditional_process()
 	logger.info(f'End conditional_process: {uid}', 'api.deep_swapper')
 
-	return FileResponse(
-		path=output_file,
-		media_type=get_media_type(output_file),
-		filename=f'{uid}.mp4',
-		headers={"Content-Disposition": "inline"}
-	)
+	if response_type == 'file':
+		return FileResponse(
+			path=output_file,
+			media_type=get_media_type(output_file),
+			filename=f'{uid}.mp4',
+			headers={"Content-Disposition": "inline"}
+		)
+	else:
+		return {
+			'code': 200,
+			'data': {
+				'task_id': uid,
+				'file': f'{uid}.{file_type}',
+			}
+		}
 
 
 def download(url: str, file_name: str) -> str:
@@ -207,6 +221,11 @@ def get_media_type(file_path):
 	return content_type
 
 
+app.include_router(router)
+
 def launch():
-	app.include_router(router)
-	uvicorn.run(app, host='0.0.0.0', port=int(state_manager.get_item('port')))
+	uvicorn.run(
+		app,
+		host='0.0.0.0',
+		port=int(state_manager.get_item('port')),
+	)

@@ -187,7 +187,7 @@ WORDING : Dict[str, Any] =\
 		'ui_layouts': 'launch a single or multiple UI layouts (choices: {choices}, ...)',
 		'ui_workflow': 'choose the ui workflow',
 		# apis
-		'port': 'launch server with port',
+		'port': 'The port of serve',
 		# execution
 		'execution_device_id': 'specify the device used for processing',
 		'execution_providers': 'inference using different providers (choices: {choices}, ...)',
@@ -201,9 +201,10 @@ WORDING : Dict[str, Any] =\
 		'system_memory_limit': 'limit the available RAM that can be used while processing',
 		# misc
 		'log_level': 'adjust the message severity displayed in the terminal',
+		# api
+		'api': 'run the program with api',
 		# run
 		'run': 'run the program with ui',
-		'api': 'run the program with api',
 		'headless_run': 'run the program in headless mode',
 		'batch_run': 'run the program in batch mode',
 		'force_download': 'force automate downloads and exit',
