@@ -5,14 +5,17 @@ import mimetypes
 import os
 import uuid
 from contextlib import asynccontextmanager
+from pathlib import Path
 
 import requests
-from fastapi import FastAPI, APIRouter, Request
+from fastapi import FastAPI, APIRouter, Request, UploadFile, File
 from fastapi.responses import RedirectResponse
 import uvicorn
 from starlette.responses import FileResponse, JSONResponse
 
 from facefusion import state_manager, core, logger
+from facefusion.normalizer import normalize_fps
+from facefusion.vision import detect_video_fps
 
 
 def apply_manager(items: dict):
@@ -58,7 +61,6 @@ DEFAULT_ARGS = {
 	'output_video_preset': os.getenv('output_video_preset', 'veryfast'),
 	'output_video_quality': int(os.getenv('output_video_quality', 80)),
 	'output_video_resolution': os.getenv('output_video_resolution', '1080x1920'),
-	'output_video_fps': int(os.getenv('output_video_fps', 30)),
 	'skip_audio': os.getenv('skip_audio'),
 	'processors': os.getenv('processors', 'deep_swapper').split(','),
 	'deep_swapper_model': os.getenv('deep_swapper_model', 'iperov/elon_musk_224'),
@@ -158,6 +160,24 @@ async def exception_handler(_, exc: Exception):
 	)
 
 
+@router.post("/upload")
+def upload(file: UploadFile = File(...)):
+	suffix = Path(file.filename).suffix
+
+	file_name = f'{str(uuid.uuid4())}{suffix}'
+
+	with open(os.path.join(INPUT_DIR, file_name), 'wb') as f:
+		f.write(file.file.read())
+	logger.info(f'Upload success: {file_name}', 'api.upload')
+
+	return {
+		'code': 200,
+		'data': {
+			'file': file_name,
+		}
+	}
+
+
 @router.post("/deep_swapper")
 async def deep_swapper(
 	args: Request,
@@ -177,8 +197,11 @@ async def deep_swapper(
 	input_file = download(file, f'{uid}.{file_type}')
 	output_file = os.path.join(OUTPUT_DIR, f'{uid}.{file_type}')
 
+	output_video_fps = normalize_fps(args.get('output_video_fps')) or detect_video_fps(input_file)
+
 	state_manager.set_item('target_path', input_file)
 	state_manager.set_item('output_path', output_file)
+	state_manager.set_item('output_video_fps', output_video_fps)
 	state_manager.set_item('processors', ['deep_swapper'])
 	state_manager.set_item('deep_swapper_model', f'custom/{dfm_id}')
 	apply_manager(args)
@@ -204,16 +227,28 @@ async def deep_swapper(
 		}
 
 
-def download(url: str, file_name: str) -> str:
-	assert url.startswith('http') or url.startswith('https'), 'error file, need one url'
-	logger.info(f'Start download file[{file_name}]: {url}', 'api.download')
-	response = requests.get(url, stream=True)
-	response.raise_for_status()  # 检查请求是否成功
+def download(file: str, file_name: str) -> str:
+	"""
+	下载文件
+	:param file: 文件URL或者INPUT_DIR下的文件名
+	:param file_name: 当为URL时，保存的文件名
+	:return:
+	"""
+	logger.info(f'Start download file[{file_name}]: {file}', 'api.download')
+	if file.startswith('http') or file.startswith('https'):
+		logger.info(f'Request file[{file_name}]: {file}', 'api.download')
+		path = os.path.join(INPUT_DIR, file_name)
+		response = requests.get(file, stream=True)
+		response.raise_for_status()  # 检查请求是否成功
 
-	path = os.path.join(INPUT_DIR, file_name)
-	with open(path, 'wb') as file:
-		for chunk in response.iter_content(chunk_size=8192):
-			file.write(chunk)
+		with open(path, 'wb') as f:
+			for chunk in response.iter_content(chunk_size=8192):
+				f.write(chunk)
+	else:
+		# 直接传入文件名
+		path = os.path.abspath(os.path.join(INPUT_DIR, file))
+		assert os.path.exists(path), f'file not exists: {path}'
+
 	logger.info(f'File[{file_name}] downloaded.', 'api.download')
 	return path
 
