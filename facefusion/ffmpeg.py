@@ -18,6 +18,7 @@ def run_ffmpeg_with_progress(args: List[str], update_progress : UpdateProgress) 
 	log_level = state_manager.get_item('log_level')
 	commands = [ shutil.which('ffmpeg'), '-hide_banner', '-nostats', '-loglevel', 'error', '-progress', '-' ]
 	commands.extend(args)
+	logger.info(f'ffmpeg: {[" ".join(commands)]}', __name__)
 	process = subprocess.Popen(commands, stderr = subprocess.PIPE, stdout = subprocess.PIPE)
 
 	while process_manager.is_processing():
