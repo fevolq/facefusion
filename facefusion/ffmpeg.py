@@ -7,7 +7,7 @@ from typing import List, Optional
 import filetype
 from tqdm import tqdm
 
-from facefusion import logger, process_manager, state_manager, wording
+from facefusion import logger, process_manager, state_manager, wording, execution
 from facefusion.filesystem import remove_file
 from facefusion.temp_helper import get_temp_file_path, get_temp_frame_paths, get_temp_frames_pattern
 from facefusion.typing import AudioBuffer, Fps, OutputVideoPreset, UpdateProgress
@@ -17,6 +17,8 @@ from facefusion.vision import count_trim_frame_total, detect_video_duration, res
 def run_ffmpeg_with_progress(args: List[str], update_progress : UpdateProgress) -> subprocess.Popen[bytes]:
 	log_level = state_manager.get_item('log_level')
 	commands = [ shutil.which('ffmpeg'), '-hide_banner', '-nostats', '-loglevel', 'error', '-progress', '-' ]
+	gpu_command = [ '-hwaccel', 'cuda'] if execution.has_gpu_execution() else []
+	commands.extend(gpu_command)
 	commands.extend(args)
 	logger.info(f'ffmpeg: {[" ".join(commands)]}', __name__)
 	process = subprocess.Popen(commands, stderr = subprocess.PIPE, stdout = subprocess.PIPE)

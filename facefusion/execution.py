@@ -16,6 +16,10 @@ def has_execution_provider(execution_provider : ExecutionProvider) -> bool:
 	return execution_provider in get_available_execution_providers()
 
 
+def has_gpu_execution() -> bool:
+	return 'cuda' in get_available_execution_providers()
+
+
 def get_available_execution_providers() -> List[ExecutionProvider]:
 	inference_execution_providers = get_available_providers()
 	available_execution_providers = []
