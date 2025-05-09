@@ -61,7 +61,7 @@ DEFAULT_ARGS = {
 	'output_video_quality': int(os.getenv('output_video_quality', 80)),
 	'output_video_resolution': os.getenv('output_video_resolution', '1080x1920'),
 	'skip_audio': os.getenv('skip_audio'),
-	'processors': os.getenv('processors', 'deep_swapper').split(','),
+	'processors': os.getenv('processors', 'face_swapper').split(','),
 	'deep_swapper_model': os.getenv('deep_swapper_model', 'iperov/elon_musk_224'),
 	'deep_swapper_morph': int(os.getenv('deep_swapper_morph', 80)),
 	'age_modifier_model': os.getenv('age_modifier_model', 'styleganex_age'),

@@ -70,6 +70,7 @@ def register_ui_component(component_name : ComponentName, component: Component) 
 
 
 def init() -> None:
+	os.environ['GRADIO_SERVER_NAME'] = '0.0.0.0'
 	os.environ['GRADIO_ANALYTICS_ENABLED'] = '0'
 	os.environ['GRADIO_TEMP_DIR'] = os.path.join(state_manager.get_item('temp_path'), 'gradio')
 

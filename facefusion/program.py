@@ -184,6 +184,7 @@ def create_uis_program() -> ArgumentParser:
 	program = ArgumentParser(add_help = False)
 	available_ui_layouts = [ file.get('name') for file in list_directory('facefusion/uis/layouts') ]
 	group_uis = program.add_argument_group('uis')
+	group_uis.add_argument('--share', help = wording.get('help.share'), action = 'store_true', default = config.get_bool_value('uis.share'))
 	group_uis.add_argument('--open-browser', help = wording.get('help.open_browser'), action = 'store_true', default = config.get_bool_value('uis.open_browser'))
 	group_uis.add_argument('--ui-layouts', help = wording.get('help.ui_layouts').format(choices = ', '.join(available_ui_layouts)), default = config.get_str_list('uis.ui_layouts', 'default'), nargs = '+')
 	group_uis.add_argument('--ui-workflow', help = wording.get('help.ui_workflow'), default = config.get_str_value('uis.ui_workflow', 'instant_runner'), choices = facefusion.choices.ui_workflows)
@@ -193,7 +194,7 @@ def create_uis_program() -> ArgumentParser:
 def create_apis_program() -> ArgumentParser:
 	program = ArgumentParser(add_help = False)
 	group_apis = program.add_argument_group('apis')
-	group_apis.add_argument('--port', help = wording.get('help.port'), default = config.get_int_value('apis.port', '7860'))
+	group_apis.add_argument('--port', help = wording.get('help.port'), default = config.get_int_value('apis.port', '7860'), type = int)
 	return program
 
 

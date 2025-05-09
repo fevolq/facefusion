@@ -69,7 +69,6 @@ def route(args : Args) -> None:
 		for ui_layout in ui.get_ui_layouts_modules(state_manager.get_item('ui_layouts')):
 			if not ui_layout.pre_check():
 				return conditional_exit(2)
-		os.environ['GRADIO_SERVER_NAME'] = '0.0.0.0'
 		ui.init()
 		ui.launch()
 	if state_manager.get_item('command') == 'api':
