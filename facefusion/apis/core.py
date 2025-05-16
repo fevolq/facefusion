@@ -226,6 +226,99 @@ async def deep_swapper(
 		}
 
 
+@router.post("/face_enhancer")
+async def face_enhancer(
+	args: Request,
+):
+	args = await args.json()
+	file = args.pop('file', 'none')
+	file_type = args.pop('file_extension', 'mp4')
+	response_type = args.pop('response_type', 'file')
+	logger.info(f'输入的参数：\n'
+				f'file: {file}\n'
+				f'file_type: {file_type}\n'
+				f'response_type： {response_type}', 'api.face_enhancer')
+
+	uid = str(uuid.uuid4())
+	input_file = download(file, f'{uid}.{file_type}')
+	output_file = os.path.join(OUTPUT_DIR, f'{uid}.{file_type}')
+
+	output_video_fps = normalize_fps(args.get('output_video_fps')) or detect_video_fps(input_file)
+
+	state_manager.set_item('target_path', input_file)
+	state_manager.set_item('output_path', output_file)
+	state_manager.set_item('output_video_fps', output_video_fps)
+	state_manager.set_item('processors', ['face_enhancer'])
+	apply_manager(args)
+
+	logger.info(f'Start conditional_process: {uid}', 'api.face_enhancer')
+	core.conditional_process()
+	logger.info(f'End conditional_process: {uid}', 'api.face_enhancer')
+
+	if response_type == 'file':
+		return FileResponse(
+			path=output_file,
+			media_type=get_media_type(output_file),
+			filename=f'{uid}.mp4',
+			headers={"Content-Disposition": "inline"}
+		)
+	else:
+		return {
+			'code': 200,
+			'data': {
+				'task_id': uid,
+				'file': f'{uid}.{file_type}',
+			}
+		}
+
+
+@router.post("/inference")
+async def inference(
+	args: Request,
+):
+	args = await args.json()
+	file = args.pop('file', 'none')
+	file_type = args.pop('file_extension', 'mp4')
+	processors = args.pop('processors')
+	response_type = args.pop('response_type', 'file')
+	logger.info(f'输入的参数：\n'
+				f'file: {file}\n'
+				f'file_type: {file_type}\n'
+				f'response_type： {response_type}', 'api.face_enhancer')
+
+	uid = str(uuid.uuid4())
+	input_file = download(file, f'{uid}.{file_type}')
+	output_file = os.path.join(OUTPUT_DIR, f'{uid}.{file_type}')
+
+	output_video_fps = normalize_fps(args.get('output_video_fps')) or detect_video_fps(input_file)
+
+	state_manager.set_item('target_path', input_file)
+	state_manager.set_item('output_path', output_file)
+	state_manager.set_item('output_video_fps', output_video_fps)
+	state_manager.set_item('processors', processors.split(','))
+	apply_manager(args)
+
+	logger.info(f'Start conditional_process: {uid}', 'api.face_enhancer')
+	core.conditional_process()
+	logger.info(f'End conditional_process: {uid}', 'api.face_enhancer')
+
+	if response_type == 'file':
+		return FileResponse(
+			path=output_file,
+			media_type=get_media_type(output_file),
+			filename=f'{uid}.mp4',
+			headers={"Content-Disposition": "inline"}
+		)
+	else:
+		return {
+			'code': 200,
+			'data': {
+				'task_id': uid,
+				'file': f'{uid}.{file_type}',
+			}
+		}
+
+
 def download(file: str, file_name: str) -> str:
 	"""
 	下载文件
