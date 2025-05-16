@@ -195,6 +195,7 @@ def create_apis_program() -> ArgumentParser:
 	program = ArgumentParser(add_help = False)
 	group_apis = program.add_argument_group('apis')
 	group_apis.add_argument('--port', help = wording.get('help.port'), default = config.get_int_value('apis.port', '7860'), type = int)
+	group_apis.add_argument('--pre-check', help = wording.get('help.pre_check'), action = 'store_true',  default = config.get_bool_value('apis.pre_check'))
 	return program
 
 

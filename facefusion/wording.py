@@ -189,6 +189,7 @@ WORDING : Dict[str, Any] =\
 		'ui_workflow': 'choose the ui workflow',
 		# apis
 		'port': 'The port of serve',
+		'pre_check': 'Check models before launch',
 		# execution
 		'execution_device_id': 'specify the device used for processing',
 		'execution_providers': 'inference using different providers (choices: {choices}, ...)',

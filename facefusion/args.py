@@ -112,11 +112,13 @@ def apply_args(args : Args, apply_state_item : ApplyStateItem) -> None:
 	for processor_module in get_processors_modules(available_processors):
 		processor_module.apply_args(args, apply_state_item)
 	# uis
+	apply_state_item('share', args.get('share'))
 	apply_state_item('open_browser', args.get('open_browser'))
 	apply_state_item('ui_layouts', args.get('ui_layouts'))
 	apply_state_item('ui_workflow', args.get('ui_workflow'))
 	# apis
 	apply_state_item('port', args.get('port'))
+	apply_state_item('pre_check', args.get('pre_check'))
 	# execution
 	apply_state_item('execution_device_id', args.get('execution_device_id'))
 	apply_state_item('execution_providers', args.get('execution_providers'))

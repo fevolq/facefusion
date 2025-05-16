@@ -74,7 +74,7 @@ def route(args : Args) -> None:
 	if state_manager.get_item('command') == 'api':
 		import facefusion.apis.core as server
 
-		if not common_pre_check() or not processors_pre_check():
+		if state_manager.get_item('pre_check') and ( not common_pre_check() or not processors_pre_check() ):
 			return conditional_exit(2)
 		server.launch()
 	if state_manager.get_item('command') == 'headless-run':
