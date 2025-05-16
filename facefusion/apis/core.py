@@ -197,6 +197,7 @@ async def deep_swapper(
 	output_file = os.path.join(OUTPUT_DIR, f'{uid}.{file_type}')
 
 	output_video_fps = normalize_fps(args.get('output_video_fps')) or detect_video_fps(input_file)
+	logger.info(f'output_video_fps: {output_video_fps}', 'api.deep_swapper')
 
 	state_manager.set_item('target_path', input_file)
 	state_manager.set_item('output_path', output_file)
@@ -244,6 +245,7 @@ async def face_enhancer(
 	output_file = os.path.join(OUTPUT_DIR, f'{uid}.{file_type}')
 
 	output_video_fps = normalize_fps(args.get('output_video_fps')) or detect_video_fps(input_file)
+	logger.info(f'output_video_fps: {output_video_fps}', 'api.face_enhancer')
 
 	state_manager.set_item('target_path', input_file)
 	state_manager.set_item('output_path', output_file)
@@ -291,6 +293,7 @@ async def inference(
 	output_file = os.path.join(OUTPUT_DIR, f'{uid}.{file_type}')
 
 	output_video_fps = normalize_fps(args.get('output_video_fps')) or detect_video_fps(input_file)
+	logger.info(f'output_video_fps: {output_video_fps}', 'api.inference')
 
 	state_manager.set_item('target_path', input_file)
 	state_manager.set_item('output_path', output_file)
@@ -341,7 +344,7 @@ def download(file: str, file_name: str) -> str:
 		path = os.path.abspath(os.path.join(INPUT_DIR, file))
 		assert os.path.exists(path), f'file not exists: {path}'
 
-	logger.info(f'File[{file_name}] downloaded.', 'api.download')
+	logger.info(f'File[{file_name} >> {path}] downloaded.', 'api.download')
 	return path
 
 
