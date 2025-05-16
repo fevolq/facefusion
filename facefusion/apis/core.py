@@ -284,7 +284,7 @@ async def inference(
 	logger.info(f'输入的参数：\n'
 				f'file: {file}\n'
 				f'file_type: {file_type}\n'
-				f'response_type： {response_type}', 'api.face_enhancer')
+				f'response_type： {response_type}', f'api.inference')
 
 	uid = str(uuid.uuid4())
 	input_file = download(file, f'{uid}.{file_type}')
