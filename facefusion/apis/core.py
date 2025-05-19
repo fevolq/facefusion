@@ -16,6 +16,7 @@ from starlette.responses import FileResponse, JSONResponse
 from facefusion import state_manager, core, logger
 from facefusion.normalizer import normalize_fps
 from facefusion.vision import detect_video_fps
+from facefusion.apis import instant_runner
 
 
 def apply_manager(items: dict):
@@ -207,7 +208,7 @@ async def deep_swapper(
 	apply_manager(args)
 
 	logger.info(f'Start conditional_process: {uid}', 'api.deep_swapper')
-	core.conditional_process()
+	instant_runner.run()
 	logger.info(f'End conditional_process: {uid}', 'api.deep_swapper')
 
 	if response_type == 'file':
@@ -254,7 +255,7 @@ async def face_enhancer(
 	apply_manager(args)
 
 	logger.info(f'Start conditional_process: {uid}', 'api.face_enhancer')
-	core.conditional_process()
+	instant_runner.run()
 	logger.info(f'End conditional_process: {uid}', 'api.face_enhancer')
 
 	if response_type == 'file':
@@ -302,7 +303,7 @@ async def inference(
 	apply_manager(args)
 
 	logger.info(f'Start conditional_process: {uid}', 'api.face_enhancer')
-	core.conditional_process()
+	instant_runner.run()
 	logger.info(f'End conditional_process: {uid}', 'api.face_enhancer')
 
 	if response_type == 'file':
